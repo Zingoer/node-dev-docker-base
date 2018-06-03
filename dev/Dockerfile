@@ -5,6 +5,4 @@ LABEL description="image to learn react"
 
 ARG DEV_HOME
 
-ENV PROJECT_NAME my-app
-
 WORKDIR $DEV_HOME

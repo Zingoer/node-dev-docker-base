@@ -11,6 +11,7 @@ REPO_NAME=my-project
 IMAGE_NAME=${REPO_NAME}
 # To avoid interfere with other projects in the future, when using helper running up the service, give it a isolated network
 NETWORK_NAME=${REPO_NAME}_network
+PORT=3000
 
 # Text Block
 read -d '' instruction << EOM
@@ -65,7 +66,7 @@ create_network(){
 start_app(){
     if [[ -z "$(docker ps -aqf "name=${REPO_NAME}")" ]]; then
         echo "${INFO}Start ${REPO_NAME}..." &&\
-        docker run --rm -it --name ${REPO_NAME} -v $(pwd):$(pwd) -p 3001:3001 --network ${NETWORK_NAME} ${IMAGE_NAME}
+        docker run --rm -it --name ${REPO_NAME} -v $(pwd):$(pwd) -p ${PORT}:${PORT} --network ${NETWORK_NAME} ${IMAGE_NAME}
     else
         echo "${INFO}${REPO_NAME} is already up...${END}"
     fi
@@ -78,7 +79,7 @@ run_cli(){
         docker exec -it ${REPO_NAME} ash
     else
         echo "${INFO}create a empheral container to access cli...${END}"
-        docker run --rm -it --name ${REPO_NAME} -v $(pwd):$(pwd) -p 3001:3001 --network ${NETWORK_NAME} ${IMAGE_NAME} ash
+        docker run --rm -it --name ${REPO_NAME} -v $(pwd):$(pwd) -p ${PORT}:${PORT} --network ${NETWORK_NAME} ${IMAGE_NAME} ash
     fi
 }
 
@@ -132,6 +133,7 @@ do
             remove_all
             ;;
         "${actions[3]}")
+            create_network && \
             run_cli
             ;;
         "${actions[4]}")
